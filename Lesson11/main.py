@@ -67,5 +67,3 @@ def task3():
 
     assert choose_func(nums2, square_nums, remove_negatives) == [1, 3, 5]
 
-
-task3()
