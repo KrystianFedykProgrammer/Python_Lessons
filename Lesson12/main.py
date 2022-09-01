@@ -9,7 +9,9 @@ For example:
 def task1():
 
     def logger(func):
-        print(func(4, 5))
+        def wrapper(*args):
+            return f'{func.__name__} called with {args[0]}, {args[1]}'
+        return wrapper
 
     @logger
     def add(x, y):
@@ -17,7 +19,11 @@ def task1():
 
     @logger
     def square_all(*args):
-        return [arg ** 2 for arg in args]
+        print((arg ** 2 for arg in args))
+
+    print(add(3, 4))
+    print(square_all(3, 4))
+
 
 """Task 2
 Write a decorator that takes a list of stop words and replaces them with * inside the decorated function
@@ -26,25 +32,30 @@ Write a decorator that takes a list of stop words and replaces them with * insid
 
 def task2():
     def stop_words(words: list):
-        def wrapper(func):
-            nonlocal words
-            a = func()
-            a = a.split()
-            if words in a:
-                words = '*'
-        return wrapper
+        def changer(func):
+            def wrapper(sent):
+                change_word = func(sent)
+                for word in words:
+                    if word in change_word:
+                        change_word = change_word.replace(word, '*')
+                return change_word
+            return wrapper
+        return changer
 
-
-
-    @stop_words(['pepsi', 'BMW'])
+    @stop_words(['pepsi', 'BMW', 'Drinks'])
     def create_slogan(name: str):
         return f"{name} drinks pepsi in his brand new BMW!"
 
-    assert create_slogan("Steve") == "Steve drinks * in his brand new *!"
+    print(create_slogan('Steve'))
+
+    #assert create_slogan("Steve") == "Steve drinks * in his brand new *!"
+
 
 def main():
     #task1()
-    task2()
+    #task2()
+    pass
+
 
 if __name__ == '__main__':
     main()
